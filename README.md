@@ -10,7 +10,7 @@
   - `GetWorkspaceRoot`: returns the current tool access root.
   - `ListFiles`: lists files and directories inside the allowed folder.
   - `ReadFile`: reads text files inside the allowed folder.
-- Writes a transcript log under `logs/` for each session.
+- Writes a Markdown transcript under `logs/` for each session, with a session summary table and turn-by-turn sections that group each user prompt, internal tool activity, visible console response, timestamps, and fenced blocks together.
 
 ## How tool access works
 
@@ -122,4 +122,4 @@ Then add the `publish` folder to your `PATH`, or wrap it with a small shell scri
 
 - Tool access is intentionally restricted to the configured workspace root.
 - `ReadFile` and `ListFiles` reject paths outside that root.
-- Transcript logs are stored in `logs/`, which is also ignored by git.
+- Transcript Markdown files are stored in `logs/`, which is also ignored by git.
