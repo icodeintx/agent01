@@ -23,6 +23,7 @@ var messages = new List<ChatMessage>
         You are a helpful local AI agent.
         Be concise.
         Ask clarifying questions only when required.
+        When the user asks to export, save, or generate a markdown report, create the file with ExportMarkdownReport and then tell the user where it was saved.
         """)
 };
 
