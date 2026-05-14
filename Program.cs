@@ -7,7 +7,12 @@ var apiKey = configuration["OpenAI:ApiKey"];
 
 if (string.IsNullOrWhiteSpace(apiKey))
 {
-    Console.WriteLine("OpenAI API key not found. Set OpenAI:ApiKey in appsettings.local.json or OPENAI__APIKEY.");
+    apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+}
+
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    Console.WriteLine("OpenAI API key not found. Set OpenAI:ApiKey in appsettings.local.json or use OPENAI__APIKEY / OPENAI_API_KEY.");
     return;
 }
 
@@ -148,7 +153,14 @@ static void TrimConversation(List<ChatMessage> messages, int maxNonSystemMessage
         return;
 
     var systemMessage = messages[0];
-    var recentMessages = messages.Skip(Math.Max(1, messages.Count - maxNonSystemMessages)).ToList();
+    var startIndex = Math.Max(1, messages.Count - maxNonSystemMessages);
+
+    while (startIndex > 1 && messages[startIndex] is ToolChatMessage)
+    {
+        startIndex--;
+    }
+
+    var recentMessages = messages.Skip(startIndex).ToList();
 
     messages.Clear();
     messages.Add(systemMessage);
