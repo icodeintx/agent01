@@ -73,6 +73,7 @@ The API key is read from:
 
 - `OpenAI:ApiKey`
 - or environment variable `OPENAI__APIKEY`
+- or environment variable `OPENAI_API_KEY`
 
 `appsettings.local.json` is ignored by git so you can keep your local secret there.
 
@@ -109,7 +110,7 @@ Create or update this locally with your real key:
 dotnet restore
 ```
 
-3. Put your API key in `appsettings.local.json` or set `OPENAI__APIKEY`.
+3. Put your API key in `appsettings.local.json` or set `OPENAI__APIKEY` or `OPENAI_API_KEY`.
 4. Build the project:
 
 ```powershell

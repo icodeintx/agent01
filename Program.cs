@@ -7,7 +7,12 @@ var apiKey = configuration["OpenAI:ApiKey"];
 
 if (string.IsNullOrWhiteSpace(apiKey))
 {
-    Console.WriteLine("OpenAI API key not found. Set OpenAI:ApiKey in appsettings.local.json or OPENAI__APIKEY.");
+    apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+}
+
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    Console.WriteLine("OpenAI API key not found. Set OpenAI:ApiKey in appsettings.local.json or use OPENAI__APIKEY / OPENAI_API_KEY.");
     return;
 }
 
@@ -15,7 +20,26 @@ var client = new OpenAIClient(apiKey);
 var chatClient = client.GetChatClient("gpt-4.1-mini");
 var workspaceRoot = ResolveWorkspaceRoot();
 
-using var transcript = new TranscriptLogger(workspaceRoot);
+var transcriptLogPath = configuration["Logging:TranscriptPath"];
+if (string.IsNullOrWhiteSpace(transcriptLogPath))
+{
+    Console.WriteLine("Transcript log path not configured. Set Logging:TranscriptPath in appsettings.json or use the LOGGING__TRANSCRIPTPATH environment variable.");
+    return;
+}
+
+var resolvedLogPath = Path.GetFullPath(transcriptLogPath);
+
+try
+{
+    Directory.CreateDirectory(resolvedLogPath);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Cannot create transcript log directory '{resolvedLogPath}': {ex.Message}");
+    return;
+}
+
+using var transcript = new TranscriptLogger(resolvedLogPath, workspaceRoot);
 
 var messages = new List<ChatMessage>
 {
@@ -135,7 +159,7 @@ static string ResolveWorkspaceRoot()
 static IConfiguration BuildConfiguration()
 {
     return new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
+        .SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
         .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: false)
         .AddEnvironmentVariables()
@@ -148,7 +172,14 @@ static void TrimConversation(List<ChatMessage> messages, int maxNonSystemMessage
         return;
 
     var systemMessage = messages[0];
-    var recentMessages = messages.Skip(Math.Max(1, messages.Count - maxNonSystemMessages)).ToList();
+    var startIndex = Math.Max(1, messages.Count - maxNonSystemMessages);
+
+    while (startIndex > 1 && messages[startIndex] is ToolChatMessage)
+    {
+        startIndex--;
+    }
+
+    var recentMessages = messages.Skip(startIndex).ToList();
 
     messages.Clear();
     messages.Add(systemMessage);

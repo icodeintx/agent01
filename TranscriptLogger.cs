@@ -5,15 +5,14 @@ internal sealed class TranscriptLogger : IDisposable
     private int turnNumber;
     private bool turnOpen;
 
-    public TranscriptLogger(string workspaceRoot)
+    public TranscriptLogger(string logDirectoryPath, string workspaceRoot)
     {
         var startedAt = DateTimeOffset.Now;
-        var logDirectory = Path.Combine(workspaceRoot, "logs");
-        Directory.CreateDirectory(logDirectory);
+        Directory.CreateDirectory(logDirectoryPath);
 
         LogFilePath = Path.Combine(
-            logDirectory,
-            $"transcript-{startedAt:yyyyMMdd-HHmmss}.md"
+            logDirectoryPath,
+            $"agent01-transcript-{startedAt:yyyyMMdd-HHmmss}.md"
         );
 
         writer = new StreamWriter(LogFilePath, append: true)
@@ -28,6 +27,7 @@ internal sealed class TranscriptLogger : IDisposable
         writer.WriteLine($"| Field | Value |");
         writer.WriteLine($"| --- | --- |");
         writer.WriteLine($"| Started | {startedAt:O} |");
+        writer.WriteLine($"| Log Directory | {EscapeTableCell(logDirectoryPath)} |");
         writer.WriteLine($"| Tool Access Root | {EscapeTableCell(workspaceRoot)} |");
         writer.WriteLine($"| Transcript File | {EscapeTableCell(LogFilePath)} |");
         writer.WriteLine();

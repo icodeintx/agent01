@@ -1,4 +1,91 @@
-bin/
-obj/
+## Visual Studio and .NET build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Xx]64/
+[Xx]86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Oo]ut/
+
+## Visual Studio IDE folders and user-specific files
+.vs/
+Generated\ Files/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Logs and diagnostics
+*.log
+*.tlog
+*.binlog
+[Ll]og/
+[Ll]ogs/
 logs/
+
+## Test, coverage, and benchmark artifacts
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+BenchmarkDotNet.Artifacts/
+
+## NuGet and package restore artifacts
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+## Publish artifacts
+publish/
+*.publish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+PublishScripts/
+
+## Tooling and editor folders
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+## Generated files and caches
+*.cache
+*.tmp
+*.tmp_proj
+*.pidb
+*.svclog
+*.pdb
+*.obj
+*.ilk
+*.meta
+*.ipdb
+*.iobj
+*.pch
+*.rsp
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+
+## Local configuration and generated reports for this repo
 appsettings.local.json
+reports/
