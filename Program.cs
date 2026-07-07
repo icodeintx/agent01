@@ -20,7 +20,26 @@ var client = new OpenAIClient(apiKey);
 var chatClient = client.GetChatClient("gpt-4.1-mini");
 var workspaceRoot = ResolveWorkspaceRoot();
 
-using var transcript = new TranscriptLogger(workspaceRoot);
+var transcriptLogPath = configuration["Logging:TranscriptPath"];
+if (string.IsNullOrWhiteSpace(transcriptLogPath))
+{
+    Console.WriteLine("Transcript log path not configured. Set Logging:TranscriptPath in appsettings.json or use the LOGGING__TRANSCRIPTPATH environment variable.");
+    return;
+}
+
+var resolvedLogPath = Path.GetFullPath(transcriptLogPath);
+
+try
+{
+    Directory.CreateDirectory(resolvedLogPath);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Cannot create transcript log directory '{resolvedLogPath}': {ex.Message}");
+    return;
+}
+
+using var transcript = new TranscriptLogger(resolvedLogPath, workspaceRoot);
 
 var messages = new List<ChatMessage>
 {
@@ -140,7 +159,7 @@ static string ResolveWorkspaceRoot()
 static IConfiguration BuildConfiguration()
 {
     return new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
+        .SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
         .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: false)
         .AddEnvironmentVariables()
